@@ -20,7 +20,6 @@
         </div>
       </div>
     </div>
-
     <div class="inner-box">
       <div class="logo">
         <img
@@ -30,12 +29,12 @@
       </div>
       <div class="search">
         <input v-model="filter" placeholder="搜索商品" />
-        <div class="request" @click="onSearch()">
+        <div class="request">
           <div style="font-size: 18px" class="svg">
             <Search style="width: 18px; height: 32px; margin-right: 8px" />
           </div>
 
-          <span>搜索</span>
+          <span @click="getSearchList()">搜索</span>
         </div>
       </div>
       <div class="contact" @click="ADD()">联系我们</div>
@@ -55,29 +54,29 @@
     <div class="box">
       <div v-show="status == 0">
         <all-item
-          v-for="item in productList"
+          v-for="item in list.productList"
           :key="item.id"
           :item="item"
         ></all-item>
       </div>
       <div v-show="status == 1">
         <new-item
-          v-for="item in newProductList"
+          v-for="item in list.newProductList"
           :key="item.id"
           :item="item"
         ></new-item>
-        <div v-if="newProductList == 0">1214</div>
       </div>
+
       <div v-show="status == 2">
         <video-item
-          v-for="item in productList"
+          v-for="item in list.productList"
           :key="item.id"
           :item="item"
         ></video-item>
       </div>
       <div v-show="status == 3">
         <image-item
-          v-for="item in productList"
+          v-for="item in list.productList"
           :key="item.id"
           :item="item"
         ></image-item>
@@ -96,21 +95,20 @@
 </template>
 
 <script setup lang="ts">
+import FileSaver from "file-saver";
 import { reactive, toRefs, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import AllItem from "./components/all-item.vue";
 import NewItem from "./components/new-item.vue";
 import ImageItem from "./components/image-item.vue";
 import videoItem from "./components/video.item.vue";
-import { getProductList } from "@/api/product/index.ts";
-
-let router = useRouter();
+import { getSearch } from "@/api/search/index.ts";
+import { useRoute } from "vue-router";
+let route = useRoute();
 const state = reactive({
   currentPage: 1,
   totalPage: 0,
-  filter: "",
-  productList: [] as any,
-  newProductList: [] as any,
+  filter: "" as any,
+  list: [] as any,
   tabsList: [] as any,
   tList1: [
     {
@@ -161,29 +159,21 @@ const state = reactive({
   language: 0,
   status: 0,
 });
-const {
-  currentPage,
-  totalPage,
-  filter,
-  options,
-  tabsList,
-  status,
-  productList,
-  newProductList,
-} = toRefs(state);
-const onChange = () => {
-  ProductList();
-};
-const onSize = () => {
-  ProductList();
-};
-const ProductList = () => {
-  getProductList({ currentPage }).then((res) => {
-    state.newProductList = res.newProductList;
-    state.productList = res.productList;
-    state.totalPage = res.pages;
+const { currentPage, totalPage, filter, options, tabsList, status, list } =
+  toRefs(state);
+const getSearchList = () => {
+  state.filter = route.query.filter;
+  getSearch({ currentPage, filter: state.filter }).then((res) => {
+    state.list = res;
   });
 };
+const onChange = () => {
+  getSearchList();
+};
+const onSize = () => {
+  getSearchList();
+};
+
 //切换语言
 const onOut = (item) => {
   console.log(item.shift);
@@ -207,13 +197,9 @@ const ADD = () => {
   // });
 };
 
-//搜索
-const onSearch = () => {
-  router.push({ name: "search", query: { filter: state.filter } });
-};
 onMounted(() => {
   state.tabsList = state.tList1;
-  ProductList();
+  getSearchList();
 });
 </script>
 
@@ -319,7 +305,6 @@ onMounted(() => {
         width: 120px;
         color: #fff;
         height: 40px;
-
         .svg {
           display: flex;
           justify-content: center;

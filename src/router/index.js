@@ -1,26 +1,36 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    redirect: '/home'
+    path: "/",
+    name: "home",
+    redirect: "/home",
   },
   {
-    path: '/home',
-    name: '首页',
-    component: () => import("../views/home/index.vue")
+    path: "/home",
+    name: "home",
+    component: () => import("@/views/home/index.vue"),
   },
   {
-    path: '/detail',
-    name: '详情',
-    component: () => import('../views/detail/index.vue')
-  }
-]
+    path: "/detail/:id",
+    name: "detail",
+    component: () => import("@/views/detail/index.vue"),
+  },
+  {
+    path: "/search",
+    name: "search",
+    component: () => import("@/views/search/index.vue"),
+  },
+  {
+    path: "/404",
+    name: "404",
+    component: () => import("@/views/error/404.vue"),
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
