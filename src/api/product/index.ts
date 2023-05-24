@@ -16,3 +16,11 @@ export function getProductDetail(data: any) {
     params: {},
   });
 }
+//获取推荐列表
+export function getRecommend(data: any) {
+  return request({
+    url: `/v1/p/noauth/recommend_products/`,
+    method: "get",
+    params: {},
+  });
+}

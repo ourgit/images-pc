@@ -1,26 +1,6 @@
 <template>
   <div class="details">
-    <div class="header">
-      <div class="contes">
-        <div class="left">
-          <span>欢迎来到大雄潮鞋</span>
-        </div>
-        <div class="dropdown">
-          <div class="dropbtn">
-            <img src="@/assets/img/language.png" alt="" />
-          </div>
-          <div class="dropdown-content">
-            <!-- <span
-              v-for="(item, index) in options"
-              :key="index"
-              @click="onOut(item)"
-              >{{ item.name }}</span
-            > -->
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <top @clickTabs="clickTabs"></top>
     <div class="content">
       <div class="top">
         <div class="left">
@@ -45,39 +25,46 @@
                 <img :src="item" />
               </div>
             </div>
-
             <div class="swiper-button-prev"></div>
           </div>
         </div>
-        <div class="right">
+        <div class="middle">
           <div class="title">
             {{ detailList.title }}
           </div>
           <div class="btn">
             <div class="download b" @click="onDownload()">
               <el-icon><Download /></el-icon>
-              <span>下载相册</span>
+              <span>{{ reform.DownloadVideo }}</span>
             </div>
             <div class="copylink b" @click="shareToFacebook()">
               <el-icon><Share /></el-icon>
-              <span>分享链接</span>
+              <span>{{ reform.transmit }}</span>
             </div>
           </div>
         </div>
+        <div class="right">
+          <item></item>
+        </div>
       </div>
       <div class="theme">
-        <div class="video">
-          <video
-            controls
-            src="http://vod.v.jstv.com/2023/05/13/JSTV_JSWSNEW_1683986849831_4U3t97z_1133.mp4"
-          ></video>
+        <div class="tabs">
+          <span @click="onShow('0')" :class="[show == 0 ? 'active' : '']">{{
+            reform.video
+          }}</span>
+          <span @click="onShow('1')" :class="[show == 1 ? 'active' : '']">{{
+            reform.photo
+          }}</span>
         </div>
-        <div
-          class="item"
-          v-for="(item, index) in detailList.imagesUrl"
-          :key="index"
-        >
-          <img :src="item" alt="" />
+        <div class="box">
+          <video-item
+            v-show="show == 0"
+            :videoUrl="detailList.videoUrl"
+          ></video-item>
+          <image-item
+            v-show="show == 1"
+            :imagesUrl="detailList.imagesUrl"
+          ></image-item>
         </div>
       </div>
     </div>
@@ -88,8 +75,13 @@
 import { ref, reactive, toRefs, watch, nextTick, onMounted } from "vue";
 import Swiper from "swiper";
 import { useRoute } from "vue-router";
-import { getProductDetail } from "@/api/product/index.ts";
+import { getProductDetail，getRecommendList } from "@/api/product/index.ts";
 import FileSaver from "file-saver";
+import VideoItem from "./video-item/index.vue";
+import ImageItem from "./img-item/index.vue";
+import item from "./item/index.vue";
+import top from "@/components/top/index.vue";
+import { blob } from "stream/consumers";
 let route = useRoute();
 const mask = ref();
 const big = ref();
@@ -97,17 +89,58 @@ const cur = ref();
 const state = reactive({
   detailList: [] as any,
   image: "",
+  show: 0 as any,
+  reform: {
+    video: "视频",
+    photo: "相册",
+    DownloadVideo: "下载视频/相册",
+    transmit: "分享链接",
+  },
+  RecommendList:[]
 });
-const { detailList, image } = toRefs(state);
-const getDetail = () => {
+const { detailList, image, show, reform } = toRefs(state);
+//详情
+const getDetail= () => {
   let id = route.params.id;
-  getProductDetail({ id }).then((res) => {
+  getRecommendList({ id }).then((res) => {
     res.imagesUrl = JSON.parse(res.imagesUrl);
     state.image = res.imagesUrl[0];
     state.detailList = res;
-    console.log(res);
-    console.log(state.detailList);
   });
+};
+//推荐
+const geRecommend = () => {
+  let id = route.params.id;
+  getRecommendList({ id }).then((res) => {
+   state.RecommendList=res.list
+  });
+};
+//翻译
+const clickTabs = (shift) => {
+  let ru1 = {
+    video: "视频",
+    photo: "相册",
+    DownloadVideo: "下载视频/相册",
+    transmit: "分享链接",
+  };
+  let ru2 = {
+    video: "video",
+    photo: "photo",
+    DownloadVideo: "Download",
+    transmit: "share link",
+  };
+  switch (shift) {
+    case 0:
+      state.reform = ru1;
+      break;
+    case 1:
+      state.reform = ru2;
+      break;
+  }
+};
+//切换
+const onShow = (type) => {
+  state.show = type;
 };
 //分享
 const shareToFacebook = () => {
@@ -118,11 +151,63 @@ const shareToFacebook = () => {
 };
 //下载
 const onDownload = () => {
-  state.detailList.videoUrl != "" ? haVideo() : "";
-  // state.detailList.imagesUrl.forEach((item, index) => {
-  //   FileSaver.saveAs(item, `${index}.jpg`);
-  // });
+  // state.detailList.videoUrl != "" ?  : "";
+  const imagesUrl = [
+    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
+    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
+    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
+    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
+  ];
+
+  // state.detailList.imagesUrl
+  imagesUrl.forEach((item: any, index) => {
+    // const link = document.createElement("a");
+    // link.href = item;
+    // link.download = `image${index + 1}.jpg`; // 下载时的文件名
+    // link.style.display = "none";
+    // // 将链接添加到文档中并模拟点击
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    // FileSaver.saveAs(item, `图片${index}.jpg`);
+    fetch(item)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+
+        reader.onloadend = function () {
+          const base64Data = reader.result;
+
+          // 创建隐藏的 <a> 标签
+          const downloadLink = document.createElement("a");
+          downloadLink.href = base64Data;
+          downloadLink.download = "image.png"; // 下载的文件名
+          downloadLink.style.display = "none";
+
+          document.body.appendChild(downloadLink);
+
+          downloadLink.click(); // 模拟点击触发下载
+
+          document.body.removeChild(downloadLink); // 下载完成后移除 <a> 标签
+        };
+
+        reader.readAsDataURL(blob);
+      })
+      .catch((error) => {
+        console.error("转换并下载图片失败:", error);
+      });
+  });
 };
+const getBase64Image = (img) => {
+  let canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+  let ctx = canvas.getContext("2d");
+  ctx?.drawImage(img, 0, 0, img.width, img.height);
+  let dataURL = canvas.toDataURL("image/png");
+  return dataURL;
+};
+
 const haVideo = () => {
   // var name = "download";
   // var url =
@@ -138,14 +223,13 @@ const haVideo = () => {
   //     a.href = objectUrl;
   //     a.click();
   //     window.URL.revokeObjectURL(objectUrl);
+
   //   });
   const videoUrl =
     "http://vod.v.jstv.com/2023/05/13/JSTV_JSWSNEW_1683986849831_4U3t97z_1133.mp4"; // 替换为你的视频文件的实际URL
-
   const xhr = new XMLHttpRequest();
   xhr.open("GET", videoUrl, true);
   xhr.responseType = "blob";
-
   xhr.onload = function () {
     if (this.status === 200) {
       const videoBlob = this.response;
@@ -187,112 +271,16 @@ const handler = (event: any) => {
   Aabig.style.top = -2 * top + "px";
 };
 const onPitch = (item) => {
-  state.image = item.imgUrl;
+  state.image = item;
 };
 onMounted(() => {
   getDetail();
+  geRecommend()
 });
 </script>
 
 <style scoped lang="scss">
 .details {
-  .inner-box {
-    margin: 0 auto;
-    height: 120px;
-    width: 1200px;
-    display: flex;
-    align-items: center;
-    .logo {
-      img {
-        height: 80px;
-      }
-    }
-    .search {
-      height: 40px;
-      margin-left: 100px;
-      border: 2px solid #ff3333;
-      width: 700px;
-      display: flex;
-      input {
-        margin-left: 20px;
-        border: none;
-        outline: none;
-        width: 560px;
-      }
-      .request {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #ff3333;
-        width: 120px;
-        color: #fff;
-        height: 40px;
-        .svg {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      }
-    }
-    .contact {
-      padding: 14px 30px;
-      background-color: #d74b00;
-      border-color: #d74b00;
-      margin-left: 50px;
-      color: #fdfdfd;
-    }
-  }
-  .header {
-    border-bottom: 1px solid #dcdfe6;
-    .contes {
-      margin: 0 auto;
-      width: 1200px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      justify-content: space-between;
-      .left {
-        span {
-          padding: 10px;
-        }
-      }
-      .dropdown {
-        /* 下拉按钮样式 */
-        .dropbtn {
-          color: black;
-          padding: 10px;
-          font-size: 16px;
-          border: none;
-          cursor: pointer;
-        }
-        /* 下拉内容（默认隐藏） */
-        .dropdown-content {
-          display: none;
-          position: absolute;
-          background-color: #f9f9f9;
-          border-radius: 10px;
-          min-width: 160px;
-          box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-          z-index: 1;
-        }
-
-        .dropdown-content span {
-          color: black;
-          padding: 12px 16px;
-          text-decoration: none;
-          display: block;
-        }
-
-        .dropdown-content span:hover {
-          background-color: #f1f1f1;
-        }
-      }
-      & > :hover .dropdown-content {
-        display: block;
-      }
-    }
-  }
   .content {
     width: 1200px;
     margin: 20px auto;
@@ -374,16 +362,13 @@ onMounted(() => {
             flex: 1;
             display: flex;
             max-width: 375.5px;
-
             .swiper-slide {
-              width: 56px;
-              height: 56px;
-              margin: 0 20px;
+              width: 50px !important;
+              height: 50px;
+              margin: 0 10px;
               img {
-                width: 100%;
-                height: 100%;
                 border: 1px solid #ccc;
-                padding: 2px;
+
                 width: 50px;
                 height: 50px;
 
@@ -418,11 +403,11 @@ onMounted(() => {
           }
         }
       }
-      .right {
+      .middle {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        margin-left: 30px;
-        font-weight: 900;
+        margin-left: 20px;
         justify-content: space-between;
         .title {
           font-size: 20px;
@@ -437,6 +422,7 @@ onMounted(() => {
             align-items: center;
             width: 150px;
             height: 45px;
+            color: #fff;
           }
           .download {
             border-top-left-radius: 20px;
@@ -460,18 +446,45 @@ onMounted(() => {
           }
         }
       }
+      .right {
+        margin-left: 20px;
+        width: 200px;
+        // background-color: #f6f6f6;
+        border-left: 1px solid #f3f3f3;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+      }
     }
     .theme {
       margin-top: 30px;
       border: 1px solid #e8e8e8;
       display: flex;
       flex-direction: column;
-      .video {
+      .tabs {
+        background-color: #fafafa;
+        height: 50px;
+        border-bottom: 1px solid #fdfdfd;
+        display: flex;
+        align-items: center;
         width: 100%;
-        height: 960px;
+        span {
+          text-align: center;
+          line-height: 50px;
+          font-size: 16px;
+          color: #3c3c3c;
+          width: 100px;
+
+          border: 1px solid #f6f6f6;
+        }
+        & > .active {
+          background-color: #ff3333;
+          color: #f6f6f6;
+        }
       }
-      .item {
-        // height: 400px;
+      .box {
+        display: flex;
+        justify-content: center;
       }
     }
   }

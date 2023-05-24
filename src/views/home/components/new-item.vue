@@ -25,16 +25,16 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 250px;
-  height: 300px;
-  padding: 24px;
+  width: 200px;
+  height: 250px;
+  padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
   border-collapse: collapse !important;
   img {
     width: 100%;
-    height: 250px;
+    height: 198px;
   }
   .contes {
     flex: 1;
@@ -42,7 +42,7 @@ const onDetails = () => {
     .text {
       font-size: 16px;
       line-height: 16px;
-      color: #8888;
+      color: #989898;
     }
   }
 }
