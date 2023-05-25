@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from "vue-router";
-
+import { createRouter, createWebHashHistory } from "vue-router";
+//createWebHistory
 const routes = [
   {
     path: "/",
-    name: "home",
-    redirect: "/home",
+
+    redirect: '/home',
   },
   {
     path: "/home",
@@ -22,6 +22,11 @@ const routes = [
     component: () => import("@/views/search/index.vue"),
   },
   {
+    path: "/batch",
+    name: "batch",
+    component: () => import("@/views/batch/index.vue"),
+  },
+  {
     path: "/404",
     name: "404",
     component: () => import("@/views/error/404.vue"),
@@ -29,7 +34,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 });
 

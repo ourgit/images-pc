@@ -6,7 +6,7 @@
       playsinline="playsinline"
       @mouseenter="onShow('true')"
       @mouseleave="onShow('false')"
-      src="http://vod.v.jstv.com/2023/05/13/JSTV_JSWSNEW_1683986849831_4U3t97z_1133.mp4"
+      :src="videoUrl"
     ></video>
   </div>
   <div class="not" v-else>

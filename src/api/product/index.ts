@@ -17,7 +17,7 @@ export function getProductDetail(data: any) {
   });
 }
 //获取推荐列表
-export function getRecommend(data: any) {
+export function getRecommendList(data: any) {
   return request({
     url: `/v1/p/noauth/recommend_products/`,
     method: "get",

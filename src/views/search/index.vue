@@ -58,15 +58,20 @@
 <script setup lang="ts">
 import FileSaver from "file-saver";
 import top from "@/components/top/index.vue";
-import { reactive, toRefs, onMounted } from "vue";
+import { reactive, toRefs, onMounted, watch } from "vue";
 import AllItem from "./components/all-item.vue";
 import NewItem from "./components/new-item.vue";
 import ImageItem from "./components/image-item.vue";
 import videoItem from "./components/video.item.vue";
-import { getSearch } from "@/api/search/index.ts";
+import { getProductList } from "@/api/product/index.ts";
 import { useRoute, useRouter } from "vue-router";
 let route = useRoute();
 let router = useRouter();
+import { onBeforeRouteUpdate } from "vue-router";
+onBeforeRouteUpdate((to) => {
+  state.filter = to.query.filter;
+  getSearchList();
+});
 const state = reactive({
   currentPage: 1,
   totalPage: 0,
@@ -150,8 +155,7 @@ const {
   productList,
 } = toRefs(state);
 const getSearchList = () => {
-  state.filter = route.query.filter;
-  getSearch({ currentPage: state.currentPage, filter: state.filter }).then(
+  getProductList({ page: state.currentPage, filter: state.filter }).then(
     (res) => {
       res.newProductList.forEach((item) => {
         item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
@@ -185,9 +189,13 @@ const clickTabs = (shift) => {
 };
 //切换tabs
 const onTabs = (status) => {
+  state.currentPage = 1;
+  getSearchList();
   state.status = status;
 };
+
 onMounted(() => {
+  state.filter = route.query.filter;
   getSearchList();
 });
 </script>

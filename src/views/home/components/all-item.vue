@@ -23,7 +23,7 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 200px;
+  width: 199px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;

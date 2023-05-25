@@ -1,5 +1,5 @@
 <template>
-  <div v-if="imagesUrl.length != 0">
+  <div v-if="imagesUrl.length !== 0">
     <div class="item" v-for="(item, index) in imagesUrl" :key="index">
       <img :src="item" alt="" />
     </div>

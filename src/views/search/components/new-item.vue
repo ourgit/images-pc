@@ -2,9 +2,7 @@
   <div class="item" @click="onDetails()">
     <img :src="item.coverImgUrl" alt="" />
     <div class="contes">
-      <div>
-        <p>{{ item.title }}</p>
-      </div>
+      <p class="text">{{ item.title }}</p>
     </div>
   </div>
 </template>
@@ -25,20 +23,20 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 200px;
+  width: 199px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
-  border-collapse: collapse !important;
+
   img {
-    width: 100%;
+    width: 200px;
     height: 198px;
   }
   .contes {
     flex: 1;
-
+    margin-top: 10px;
     .text {
       font-size: 16px;
       line-height: 16px;

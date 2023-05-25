@@ -44,7 +44,7 @@ import { useRouter } from "vue-router";
 import { reactive, toRefs } from "vue";
 let router = useRouter();
 
-const emit = defineEmits(["clickTabs"]);
+const emit = defineEmits(["clickTabs", "searchProduct"]);
 const state = reactive({
   options: [
     {
@@ -68,7 +68,8 @@ const ADD = () => {
 };
 //搜索
 const onSearch = () => {
-  router.push({ name: "search", query: { filter: state.filter } });
+  console.log(222);
+  emit("searchProduct", state.filter);
 };
 //切换语言
 const onOut = (item) => {

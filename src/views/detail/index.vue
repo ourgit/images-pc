@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="right">
-          <item></item>
+          <item v-for="(item, index) in RecommendList" :key="item.id"></item>
         </div>
       </div>
       <div class="theme">
@@ -75,13 +75,13 @@
 import { ref, reactive, toRefs, watch, nextTick, onMounted } from "vue";
 import Swiper from "swiper";
 import { useRoute } from "vue-router";
-import { getProductDetail，getRecommendList } from "@/api/product/index.ts";
+import { getProductDetail, getRecommendList } from "@/api/product/index.ts";
 import FileSaver from "file-saver";
 import VideoItem from "./video-item/index.vue";
 import ImageItem from "./img-item/index.vue";
 import item from "./item/index.vue";
 import top from "@/components/top/index.vue";
-import { blob } from "stream/consumers";
+
 let route = useRoute();
 const mask = ref();
 const big = ref();
@@ -96,13 +96,13 @@ const state = reactive({
     DownloadVideo: "下载视频/相册",
     transmit: "分享链接",
   },
-  RecommendList:[]
+  RecommendList: [],
 });
-const { detailList, image, show, reform } = toRefs(state);
+const { detailList, image, show, reform, RecommendList } = toRefs(state);
 //详情
-const getDetail= () => {
+const getDetail = () => {
   let id = route.params.id;
-  getRecommendList({ id }).then((res) => {
+  getProductDetail({ id }).then((res) => {
     res.imagesUrl = JSON.parse(res.imagesUrl);
     state.image = res.imagesUrl[0];
     state.detailList = res;
@@ -112,7 +112,7 @@ const getDetail= () => {
 const geRecommend = () => {
   let id = route.params.id;
   getRecommendList({ id }).then((res) => {
-   state.RecommendList=res.list
+    state.RecommendList = res.list;
   });
 };
 //翻译
@@ -151,51 +151,17 @@ const shareToFacebook = () => {
 };
 //下载
 const onDownload = () => {
-  // state.detailList.videoUrl != "" ?  : "";
-  const imagesUrl = [
-    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
-    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
-    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
-    "https://ourimages.blob.core.windows.net/images/1008%2F2023%2F05%2F24%2Fbca96757-d605-46b0-b54a-ab401b15ccd1.jpg",
-  ];
-
-  // state.detailList.imagesUrl
-  imagesUrl.forEach((item: any, index) => {
-    // const link = document.createElement("a");
-    // link.href = item;
-    // link.download = `image${index + 1}.jpg`; // 下载时的文件名
-    // link.style.display = "none";
-    // // 将链接添加到文档中并模拟点击
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+  state.detailList.videoUrl != "" ? haVideo() : "";
+  state.detailList.imagesUrl.forEach((item: any, index) => {
+    const link = document.createElement("a");
+    link.href = item;
+    link.download = `image${index + 1}.jpg`; // 下载时的文件名
+    link.style.display = "none";
+    // 将链接添加到文档中并模拟点击
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     // FileSaver.saveAs(item, `图片${index}.jpg`);
-    fetch(item)
-      .then((response) => response.blob())
-      .then((blob) => {
-        const reader = new FileReader();
-
-        reader.onloadend = function () {
-          const base64Data = reader.result;
-
-          // 创建隐藏的 <a> 标签
-          const downloadLink = document.createElement("a");
-          downloadLink.href = base64Data;
-          downloadLink.download = "image.png"; // 下载的文件名
-          downloadLink.style.display = "none";
-
-          document.body.appendChild(downloadLink);
-
-          downloadLink.click(); // 模拟点击触发下载
-
-          document.body.removeChild(downloadLink); // 下载完成后移除 <a> 标签
-        };
-
-        reader.readAsDataURL(blob);
-      })
-      .catch((error) => {
-        console.error("转换并下载图片失败:", error);
-      });
   });
 };
 const getBase64Image = (img) => {
@@ -209,24 +175,8 @@ const getBase64Image = (img) => {
 };
 
 const haVideo = () => {
-  // var name = "download";
-  // var url =
-  //   "http://vod.v.jstv.com/2023/05/13/JSTV_JSWSNEW_1683986849831_4U3t97z_1133.mp4";
-  // var suffix = url.substring(url.lastIndexOf("."), url.length);
-  // //跳过浏览直接下载
-  // fetch(url)
-  //   .then((res) => res.blob())
-  //   .then((blob) => {
-  //     const a = document.createElement("a");
-  //     const objectUrl = window.URL.createObjectURL(blob);
-  //     a.download = name;
-  //     a.href = objectUrl;
-  //     a.click();
-  //     window.URL.revokeObjectURL(objectUrl);
+  const videoUrl = state.detailList.videoUrl;
 
-  //   });
-  const videoUrl =
-    "http://vod.v.jstv.com/2023/05/13/JSTV_JSWSNEW_1683986849831_4U3t97z_1133.mp4"; // 替换为你的视频文件的实际URL
   const xhr = new XMLHttpRequest();
   xhr.open("GET", videoUrl, true);
   xhr.responseType = "blob";
@@ -275,7 +225,7 @@ const onPitch = (item) => {
 };
 onMounted(() => {
   getDetail();
-  geRecommend()
+  geRecommend();
 });
 </script>
 
@@ -454,6 +404,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         padding: 10px;
+        overflow: hidden;
       }
     }
     .theme {

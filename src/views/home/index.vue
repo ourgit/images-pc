@@ -141,7 +141,7 @@ const onSize = () => {
   ProductList();
 };
 const ProductList = () => {
-  getProductList({ currentPage: state.currentPage }).then((res) => {
+  getProductList({ page: state.currentPage }).then((res) => {
     res.newProductList.forEach((item) => {
       item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
     });
@@ -156,6 +156,8 @@ const ProductList = () => {
 
 //切换tabs
 const onTabs = (status) => {
+  state.currentPage = 1;
+  ProductList();
   state.status = status;
 };
 const clickTabs = (shift) => {
@@ -211,7 +213,7 @@ onMounted(() => {
 .btn {
   margin-top: 100px;
   width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;
   display: flex;
   justify-content: center;
 }

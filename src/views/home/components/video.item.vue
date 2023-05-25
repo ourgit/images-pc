@@ -2,14 +2,18 @@
   <div class="item" @click="onDetails()">
     <div class="content">
       <video
+        v-if="item.videoUrl"
         ref="myViodeo"
-        src="@/assets/1.mp4"
+        :src="item.videoUrl"
         class="myViodeo"
         :controls="show"
         @mouseenter="onShow('true')"
         @mouseleave="onShow('false')"
         :style="{ height: 180 + 'px', width: show ? 100 + '%' : 180 + 'px' }"
       ></video>
+      <div class="img" v-else>
+        <img :src="item.coverImgUrl" alt="" />
+      </div>
     </div>
     <div class="contes">
       <p class="text">{{ item.title }}</p>
@@ -42,7 +46,7 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 200px;
+  width: 199px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
@@ -52,6 +56,12 @@ const onDetails = () => {
   .content {
     display: flex;
     justify-content: center;
+  }
+  .img {
+    img {
+      width: 200px;
+      height: 200px;
+    }
   }
   .contes {
     padding: 10px;
