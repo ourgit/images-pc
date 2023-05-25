@@ -1,6 +1,6 @@
 <template>
-  <div class="item">
-    <img :src="item.imagesUrl" @click="onDetail(item)" />
+  <div class="item" @click="onDetail(item)">
+    <img :src="item.coverImgUrl" />
     <span>{{ item.title }}</span>
   </div>
 </template>
@@ -25,11 +25,11 @@ const onDetail = (item) => {
   display: flex;
   height: 114.5px;
   img {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 100px;
   }
   span {
-    font-size: 12px;
+    font-size: 16px;
     margin-left: 10px;
   }
 }

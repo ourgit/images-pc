@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="contes">
-      <div class="left">
+      <div class="left" @click="onHome()">
         <span>欢迎来到大雄潮鞋</span>
       </div>
       <div class="right">
@@ -73,6 +73,9 @@ const onSearch = () => {
 //切换语言
 const onOut = (item) => {
   emit("clickTabs", item.shift);
+};
+const onHome = () => {
+  router.push("/home");
 };
 const onBatch = () => {
   router.push("/batch");

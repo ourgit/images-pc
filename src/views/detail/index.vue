@@ -44,7 +44,11 @@
           </div>
         </div>
         <div class="right">
-          <item v-for="(item, index) in RecommendList" :key="item.id"></item>
+          <item
+            v-for="(item, index) in RecommendList"
+            :key="index"
+            :item="item"
+          ></item>
         </div>
       </div>
       <div class="theme">
@@ -81,8 +85,8 @@ import VideoItem from "./video-item/index.vue";
 import ImageItem from "./img-item/index.vue";
 import item from "./item/index.vue";
 import top from "@/components/top/index.vue";
-
 let route = useRoute();
+
 const mask = ref();
 const big = ref();
 const cur = ref();
@@ -153,15 +157,19 @@ const shareToFacebook = () => {
 const onDownload = () => {
   state.detailList.videoUrl != "" ? haVideo() : "";
   state.detailList.imagesUrl.forEach((item: any, index) => {
-    const link = document.createElement("a");
-    link.href = item;
-    link.download = `image${index + 1}.jpg`; // 下载时的文件名
-    link.style.display = "none";
-    // 将链接添加到文档中并模拟点击
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    // FileSaver.saveAs(item, `图片${index}.jpg`);
+    new Promise((role, rolt) => {
+      // const link = document.createElement("a");
+      // link.href = item;
+      // link.download = `image${index + 1}.jpg`; // 下载时的文件名
+      // link.style.display = "none";
+      // // 将链接添加到文档中并模拟点击
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      setTimeout(() => {
+        FileSaver.saveAs(item, `图片${index}.jpg`);
+      }, 1000);
+    });
   });
 };
 const getBase64Image = (img) => {
@@ -204,6 +212,13 @@ watch(image, async () => {
     });
   });
 });
+watch(
+  route,
+  (newValue, oldValue) => {
+    getDetail();
+  },
+  { immediate: true }
+);
 const handler = (event: any) => {
   let Amask = mask.value;
   let Aabig = big.value;
