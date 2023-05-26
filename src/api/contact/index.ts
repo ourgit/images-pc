@@ -1,8 +1,8 @@
 import request from "@/utils/request";
 //获取联系
-export function getProductList(data: any) {
+export function getContact(data: any) {
   return request({
-    url: "/v1/p/noauth/products/",
+    url: "/v1/p/noauth/contact/",
     method: "get",
     data,
   });

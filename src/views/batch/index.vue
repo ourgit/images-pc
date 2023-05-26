@@ -9,7 +9,7 @@
             <img src="@/assets/ifroaio.png" alt="" v-else />
           </div>
           <div class="share b" @click="shareToFacebook()">分享</div>
-          <div class="save b">保存</div>
+          <div class="save b" @click="save()">保存</div>
         </div>
         <div v-if="productList.length !== 0">
           <div
@@ -52,6 +52,7 @@ import { getProductList } from "@/api/product/index.ts";
 import { reactive, toRefs, onMounted, computed } from "vue";
 import top from "./top/index.vue";
 import { useRouter } from "vue-router";
+import FileSaver from "file-saver";
 let router = useRouter();
 const state = reactive({
   currentPage: 1,
@@ -78,7 +79,6 @@ const ProductList = () => {
   );
 };
 const searchProduct = (filter) => {
-  console.log("tag", "");
   state.filter = filter;
   ProductList();
 };
@@ -114,6 +114,18 @@ const shareToFacebook = () => {
           );
         window.open(url, "_blank");
       }, 1000);
+    });
+  });
+};
+const save = () => {
+  const list = state.productList.filter((item) => item.selected);
+  list.forEach((item, index) => {
+    item.imagesUrl.forEach((i) => {
+      new Promise((role, rolt) => {
+        setTimeout(() => {
+          FileSaver.saveAs(i, `图片${index}.jpg`);
+        }, 1000);
+      });
     });
   });
 };

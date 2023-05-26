@@ -22,9 +22,9 @@ const routes = [
     component: () => import("@/views/search/index.vue"),
   },
   {
-    path: "/batch",
-    name: "batch",
-    component: () => import("@/views/batch/index.vue"),
+    path: "/share/",
+    name: "share",
+    component: () => import("@/views/share/index.vue"),
   },
   {
     path: "/404",

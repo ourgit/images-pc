@@ -2,7 +2,7 @@
   <div class="header">
     <div class="contes">
       <div class="left" @click="onHome()">
-        <span>欢迎来到大雄潮鞋</span>
+        <span>{{ contact.name }}</span>
       </div>
       <div class="right">
         <div class="batch" @click="onBatch()">批量</div>
@@ -34,14 +34,63 @@
       </div>
     </div>
     <div class="contact">
-      <img src="@/assets/OIP-C.jpg" alt="" />
+      <img :src="contact.rqCode" alt="" />
     </div>
   </div>
+  <el-dialog v-model="dialogVisible" title="批量" width="550px">
+    <div class="box">
+      <div class="list">
+        <div class="pitch">
+          <div class="pitch-left" @click="onShow()">
+            <img src="@/assets/roaio.png" alt="" v-if="choice" />
+            <img src="@/assets/ifroaio.png" alt="" v-else />
+          </div>
+        </div>
+        <div v-if="productList.length !== 0">
+          <div class="item" v-for="(item, index) in productList" :key="item.id">
+            <div class="left" @click="onSelected(item)">
+              <img src="@/assets/roaio.png" alt="" v-if="item.selected" />
+              <img src="@/assets/ifroaio.png" alt="" v-else />
+            </div>
+            <div class="module" @click="onDetail(item)">
+              <img :src="item.coverImgUrl" alt="" />
+            </div>
+            <div class="right" @click="onDetail(item)">
+              <span>{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else class="have">
+          <img src="@/assets/R-C.png" alt="" />
+        </div>
+        <div class="btn">
+          <el-pagination
+            layout="prev, pager, next, jumper"
+            :page-count="totalPage"
+            v-model:currentPage="currentPage"
+            @current-change="onChange()"
+            @size-change="onSize()"
+          />
+        </div>
+      </div>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="shareToFacebook()" type="warning"
+          >分享链接</el-button
+        >
+        <el-button type="primary" @click="save()"> 保存图片 </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { getProductList } from "@/api/product/index.ts";
+import { getContact } from "@/api/contact/index.ts";
+import { reactive, toRefs, onMounted, computed, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
-import { reactive, toRefs } from "vue";
+import FileSaver from "file-saver";
 let router = useRouter();
 
 const emit = defineEmits(["clickTabs"]);
@@ -57,14 +106,102 @@ const state = reactive({
     },
   ],
   filter: "",
+  dialogVisible: false,
+  currentPage: 1,
+  totalPage: 0,
+  productList: [] as any,
+  newProductList: [] as any,
+  contact: {} as any,
+  show: false,
 });
 
-const { filter, options } = toRefs(state);
-//保存图片
-const ADD = () => {
-  // state.list.forEach((item) => {
-  //   FileSaver.saveAs(item.image, "图片名称.jpg");
+const {
+  filter,
+  options,
+  dialogVisible,
+  productList,
+  currentPage,
+  totalPage,
+  show,
+  contact,
+} = toRefs(state);
+//请求
+const ProductList = () => {
+  getProductList({ page: state.currentPage, filter: state.filter }).then(
+    (res) => {
+      res.newProductList.forEach((item) => {
+        item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
+      });
+      res.productList.forEach((item) => {
+        item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
+      });
+      state.newProductList = res.newProductList;
+      state.productList = res.productList;
+      state.totalPage = res.pages;
+    }
+  );
+};
+//联系
+const getContactObject = () => {
+  getContact().then((res) => {
+    state.contact = res.contact;
+  });
+};
+const searchProduct = (filter) => {
+  state.filter = filter;
+  ProductList();
+};
+const onChange = () => {
+  ProductList();
+};
+const onSize = () => {
+  ProductList();
+};
+const onSelected = (item) => {
+  item.selected = !item.selected;
+};
+const onShow = () => {
+  state.show = !state.show;
+  state.productList.forEach((item) => {
+    item.selected = state.show;
+  });
+};
+//分享
+const shareToFacebook = () => {
+  const list = state.productList.filter((item) => item.selected);
+  // list.forEach((item, index) => {
+  //   const url =
+  //     "https://www.facebook.com/sharer/sharer.php?u=" +
+  //     encodeURIComponent(`https://p.xcx100.info/img-sites#/detail/${item.id}`);
+  //   window.open(url, "_blank");
   // });
+  // window.open(url, "_blank");
+  let IdList = [] as any;
+  list.forEach((item: any) => {
+    IdList.push(item.id);
+  });
+
+  router.push({ path: `/share`, query: { list: IdList } });
+};
+
+//下载
+const save = () => {
+  const list = state.productList.filter((item) => item.selected);
+  list.forEach((item, index) => {
+    item.imagesUrl.forEach((i) => {
+      new Promise((role, rolt) => {
+        setTimeout(() => {
+          FileSaver.saveAs(i, `图片${index}.jpg`);
+        }, 1000);
+      });
+    });
+  });
+};
+const choice = computed(() => {
+  return state.productList.every((item) => item.selected == true);
+});
+const onDetail = (item) => {
+  router.push(`/detail/${item.id}`);
 };
 //搜索
 const onSearch = () => {
@@ -78,8 +215,15 @@ const onHome = () => {
   router.push("/home");
 };
 const onBatch = () => {
-  router.push("/batch");
+  state.dialogVisible = true;
 };
+onBeforeMount(() => {
+  getContactObject();
+});
+
+onMounted(() => {
+  ProductList();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -193,5 +337,71 @@ const onBatch = () => {
 .hint {
   display: flex;
   flex-direction: column;
+}
+
+.el-dialog__body {
+  padding: 20px !important;
+}
+.box {
+  display: flex;
+  height: 500px;
+  overflow-y: auto;
+  z-index: 9999;
+  .list {
+    width: 800px;
+
+    .pitch {
+      display: flex;
+      align-items: center;
+      height: 35px;
+      border-bottom: 1px solid #f6f6f6;
+      .pitch-left {
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .img {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+        }
+      }
+    }
+    .have {
+      text-align: center;
+    }
+    .item {
+      display: flex;
+      margin: 10px 0;
+      .left {
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .img {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+        }
+      }
+      .module {
+        img {
+          width: 100px;
+          height: 100px;
+        }
+      }
+      .right {
+        margin-left: 10px;
+        flex: 1;
+        font-size: 18px;
+        color: #333333;
+      }
+    }
+  }
+  .btn {
+    margin: 20px auto;
+    min-width: 200px;
+    width: 200px;
+  }
 }
 </style>
