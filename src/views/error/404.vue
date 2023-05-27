@@ -24,7 +24,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="notFound">
+<script setup name="notFound">
 import { useRouter } from "vue-router";
 
 // 定义变量内容

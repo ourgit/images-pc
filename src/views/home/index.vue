@@ -55,7 +55,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { reactive, toRefs, onMounted } from "vue";
 import AllItem from "./components/all-item.vue";
 import NewItem from "./components/new-item.vue";
@@ -66,8 +66,8 @@ import top from "@/components/top/index.vue";
 const state = reactive({
   currentPage: 1,
   totalPage: 0,
-  productList: [] as any,
-  newProductList: [] as any,
+  productList: [],
+  newProductList: [],
   tabsList: [
     {
       name: "全部",
@@ -85,7 +85,7 @@ const state = reactive({
       name: "图片",
       status: 3,
     },
-  ] as any,
+  ],
   tList1: [
     {
       name: "全部",

@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import { useRouter } from "vue-router";
 let router = useRouter();
 const props = defineProps({

@@ -13,22 +13,19 @@
             <!-- 遮罩层 -->
             <div class="mask" ref="mask"></div>
           </div>
-          <div class="swiper-box">
-            <div class="swiper-container" ref="cur">
-              <div class="swiper-wrapper">
-                <div
-                  class="swiper-slide"
-                  v-for="(item, index) in detailList.imagesUrl"
-                  :key="index"
-                  @click="onPitch(item)"
-                >
-                  <img :src="item" />
-                </div>
-              </div>
-            </div>
+          <div class="swiperbox">
+            <swiper :slidesPerView="4" :spaceBetween="30" class="mySwiper">
+              <swiper-slide
+                v-for="(item, index) in detailList.imagesUrl"
+                :key="index"
+                :class="current == index ? 'active' : ''"
+                @click="onPitch(item, index)"
+              >
+                <img :src="item"
+              /></swiper-slide>
+            </swiper>
           </div>
         </div>
-
         <div class="middle">
           <div class="title">
             {{ detailList.title }}
@@ -76,9 +73,16 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, reactive, toRefs, watch, nextTick, onMounted } from "vue";
-import Swiper from "swiper";
+import { Swiper, SwiperSlide } from "swiper/vue"; // swiper所需组件
+// 这是分页器和对应方法，swiper好像在6的时候就已经分离了分页器和一些其他工具
+import { Autoplay, Navigation, Pagination, A11y } from "swiper";
+// 引入swiper样式，对应css 如果使用less或者css只需要把scss改为对应的即可
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 import { useRoute } from "vue-router";
 import { getProductDetail, getRecommendList } from "@/api/product/index.ts";
 import FileSaver from "file-saver";
@@ -86,15 +90,16 @@ import VideoItem from "./video-item/index.vue";
 import ImageItem from "./img-item/index.vue";
 import InItem from "./item/index.vue";
 import top from "@/components/top/index.vue";
+const modules = [Autoplay, Pagination, Navigation, A11y];
 let route = useRoute();
-
+const cut = ref();
 const mask = ref();
 const big = ref();
-const cur = ref();
+
 const state = reactive({
-  detailList: [] as any,
+  detailList: {},
   image: "",
-  show: 0 as any,
+  show: 0,
   reform: {
     video: "视频",
     photo: "相册",
@@ -102,8 +107,10 @@ const state = reactive({
     transmit: "分享链接",
   },
   RecommendList: [],
+  current: 0,
 });
-const { detailList, image, show, reform, RecommendList } = toRefs(state);
+const { detailList, image, show, reform, RecommendList, current } =
+  toRefs(state);
 //详情
 const getDetail = () => {
   let id = route.params.id;
@@ -157,7 +164,7 @@ const shareToFacebook = () => {
 //下载
 const onDownload = () => {
   state.detailList.videoUrl != "" ? haVideo() : "";
-  state.detailList.imagesUrl.forEach((item: any, index) => {
+  state.detailList.imagesUrl.forEach((item, index) => {
     new Promise((role, rolt) => {
       // const link = document.createElement("a");
       // link.href = item;
@@ -205,7 +212,11 @@ watch(
   },
   { immediate: true }
 );
-const handler = (event: any) => {
+watch(detailList.imagesUrl, () => {
+  nextTick(() => {});
+});
+
+const handler = (event) => {
   let Amask = mask.value;
   let Aabig = big.value;
   let left = event.offsetX - Amask.offsetWidth / 2;
@@ -221,8 +232,9 @@ const handler = (event: any) => {
   Aabig.style.left = -2 * left + "px";
   Aabig.style.top = -2 * top + "px";
 };
-const onPitch = (item) => {
+const onPitch = (item, index) => {
   state.image = item;
+  state.current = index;
 };
 onMounted(() => {
   getDetail();
@@ -246,7 +258,7 @@ onMounted(() => {
         .spec-preview {
           position: relative;
           width: 400px;
-          height: 400px;
+          height: 390px;
           border: 1px solid #ccc;
 
           img {
@@ -300,23 +312,29 @@ onMounted(() => {
             display: block;
           }
         }
-        .swiper-box {
-          height: 52px;
-          overflow: hidden;
-          .swiper-container {
-            width: 400px;
-            overflow-x: auto;
-            .swiper-wrapper {
-              display: flex;
+        .swiperbox {
+          width: 400px;
+          .mySwiper {
+            .swiper-slide {
+              width: 50px !important;
+              height: 50px;
               img {
-                margin: 0 10px;
-                width: 80px;
-                height: 60px;
+                width: 50px;
+                height: 50px;
+              }
+            }
+
+            .active {
+              width: 60px;
+              transform: scale(1.2);
+              img {
+                width: 60px;
               }
             }
           }
         }
       }
+
       .middle {
         flex: 1;
         display: flex;

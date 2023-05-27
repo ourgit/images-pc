@@ -55,8 +55,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import FileSaver from "file-saver";
+<script setup>
 import top from "@/components/top/index.vue";
 import { reactive, toRefs, onMounted, watch } from "vue";
 import AllItem from "./components/all-item.vue";
@@ -75,9 +74,9 @@ onBeforeRouteUpdate((to) => {
 const state = reactive({
   currentPage: 1,
   totalPage: 0,
-  filter: "" as any,
-  productList: [] as any,
-  newProductList: [] as any,
+  filter: "",
+  productList: [],
+  newProductList: [],
   tabsList: [
     {
       name: "全部",
@@ -95,7 +94,7 @@ const state = reactive({
       name: "图片",
       status: 3,
     },
-  ] as any,
+  ],
   tList1: [
     {
       name: "全部",

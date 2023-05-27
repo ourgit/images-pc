@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useRouter } from "vue-router";
 import { reactive, ref, toRefs } from "vue";
 const props = defineProps({

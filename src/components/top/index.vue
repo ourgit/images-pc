@@ -184,10 +184,13 @@ const shareToFacebook = () => {
   router.push({ path: `/share`, query: { list: IdList } });
 };
 
-//下载
+//下载/视频
 const save = () => {
   const list = state.productList.filter((item) => item.selected);
+  const xhr = new XMLHttpRequest();
   list.forEach((item, index) => {
+    FileSaver.saveAs(item.videoUrl, `video${index}.mp4`); // 下载文件的名称
+
     item.imagesUrl.forEach((i) => {
       new Promise((role, rolt) => {
         setTimeout(() => {
