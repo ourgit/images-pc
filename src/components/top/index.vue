@@ -1,11 +1,11 @@
 <template>
   <div class="header">
-    <div class="contes">
+    <div class="contes" @mouseenter="onMover()" @mouseleave="onMouse()">
       <div class="left" @click="onHome()">
         <span>{{ contact.name }}</span>
       </div>
       <div class="right">
-        <div class="batch" @click="onBatch()">批量</div>
+        <div class="batch" @click="onBatch()">{{ reform.batch }}</div>
         <div class="dropdown">
           <div class="dropbtn">
             <img src="@/assets/img/language.png" alt="" />
@@ -30,14 +30,14 @@
         <div style="font-size: 18px" class="svg">
           <Search style="width: 18px; height: 32px; margin-right: 8px" />
         </div>
-        <span>搜索</span>
+        <span>{{ search }}</span>
       </div>
     </div>
     <div class="contact">
       <img :src="contact.rqCode" alt="" />
     </div>
   </div>
-  <el-dialog v-model="dialogVisible" title="批量" width="550px">
+  <el-dialog v-model="dialogVisible" :title="reform.batch" width="550px">
     <div class="box">
       <div class="list">
         <div class="pitch">
@@ -76,21 +76,24 @@
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="shareToFacebook()" type="warning"
-          >分享链接</el-button
+        <el-button @click="shareToFacebook()" type="warning">{{
+          reform.share
+        }}</el-button>
+        <el-button type="primary" @click="save()">
+          {{ reform.DownloadVideo }}</el-button
         >
-        <el-button type="primary" @click="save()"> 保存图片 </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { getProductList } from "@/api/product/index.ts";
 import { getContact } from "@/api/contact/index.ts";
 import { reactive, toRefs, onMounted, computed, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import FileSaver from "file-saver";
+import { ElMessage } from "element-plus";
 let router = useRouter();
 
 const emit = defineEmits(["clickTabs"]);
@@ -109,10 +112,16 @@ const state = reactive({
   dialogVisible: false,
   currentPage: 1,
   totalPage: 0,
-  productList: [] as any,
-  newProductList: [] as any,
-  contact: {} as any,
+  productList: [],
+  newProductList: [],
+  contact: {},
   show: false,
+  reform: {
+    search: "搜索",
+    DownloadVideo: "下载",
+    share: "分享",
+    batch: "批量",
+  },
 });
 
 const {
@@ -124,6 +133,7 @@ const {
   totalPage,
   show,
   contact,
+  reform,
 } = toRefs(state);
 //请求
 const ProductList = () => {
@@ -176,29 +186,41 @@ const shareToFacebook = () => {
   //   window.open(url, "_blank");
   // });
   // window.open(url, "_blank");
-  let IdList = [] as any;
-  list.forEach((item: any) => {
+  let IdList = [];
+  list.forEach((item) => {
     IdList.push(item.id);
   });
-
-  router.push({ path: `/share`, query: { list: IdList } });
+  if (IdList.length == 0) {
+    return ElMessage({
+      message: "请选择商品",
+      type: "success",
+    });
+  } else {
+    router.push({ path: `/share`, query: { list: IdList } });
+  }
 };
 
 //下载/视频
 const save = () => {
   const list = state.productList.filter((item) => item.selected);
-  const xhr = new XMLHttpRequest();
-  list.forEach((item, index) => {
-    FileSaver.saveAs(item.videoUrl, `video${index}.mp4`); // 下载文件的名称
-
-    item.imagesUrl.forEach((i) => {
-      new Promise((role, rolt) => {
-        setTimeout(() => {
-          FileSaver.saveAs(i, `图片${index}.jpg`);
-        }, 1000);
+  if (list.length == 0) {
+    return ElMessage({
+      message: "请选择商品",
+      type: "success",
+    });
+  } else {
+    const xhr = new XMLHttpRequest();
+    list.forEach((item, index) => {
+      FileSaver.saveAs(item.videoUrl, `video${index}.mp4`); // 下载文件的名称
+      item.imagesUrl.forEach((i) => {
+        new Promise((role, rolt) => {
+          setTimeout(() => {
+            FileSaver.saveAs(i, `图片${index}.jpg`);
+          }, 1000);
+        });
       });
     });
-  });
+  }
 };
 const choice = computed(() => {
   return state.productList.every((item) => item.selected == true);
@@ -212,21 +234,47 @@ const onSearch = () => {
 };
 //切换语言
 const onOut = (item) => {
+  switch (item.shift) {
+    case 0:
+      state.reform = {
+        search: "搜索",
+        DownloadVideo: "下载",
+        share: "分享",
+        batch: "批量",
+      };
+      break;
+    case 1:
+      state.reform = {
+        search: "search",
+        DownloadVideo: "Download",
+        share: "share link",
+        batch: "batch",
+      };
+      break;
+  }
   emit("clickTabs", item.shift);
 };
 const onHome = () => {
   router.push("/home");
 };
 const onBatch = () => {
+  ProductList();
   state.dialogVisible = true;
+};
+
+const onMover = () => {
+  var body = document.querySelector("body");
+  body.style.cursor = "pointer";
+};
+const onMouse = () => {
+  var body = document.querySelector("body");
+  body.style.cursor = "default";
 };
 onBeforeMount(() => {
   getContactObject();
 });
 
-onMounted(() => {
-  ProductList();
-});
+onMounted(() => {});
 </script>
 
 <style lang="scss" scoped>
@@ -262,7 +310,7 @@ onMounted(() => {
           padding: 10px;
           font-size: 16px;
           border: none;
-          cursor: pointer;
+          // cursor: pointer;
         }
         /* 下拉内容（默认隐藏） */
         .dropdown-content {

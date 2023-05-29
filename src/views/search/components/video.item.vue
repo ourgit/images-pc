@@ -66,8 +66,13 @@ const onDetails = () => {
   .contes {
     margin-top: 10px;
     .text {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
       font-size: 16px;
       line-height: 16px;
+      letter-spacing: 1px;
       color: #989898;
     }
   }

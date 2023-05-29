@@ -72,7 +72,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, reactive, toRefs, watch, nextTick, onMounted } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue"; // swiper所需组件
@@ -82,7 +81,6 @@ import { Autoplay, Navigation, Pagination, A11y } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import { useRoute } from "vue-router";
 import { getProductDetail, getRecommendList } from "@/api/product/index.ts";
 import FileSaver from "file-saver";
@@ -95,7 +93,6 @@ let route = useRoute();
 const cut = ref();
 const mask = ref();
 const big = ref();
-
 const state = reactive({
   detailList: {},
   image: "",
@@ -166,33 +163,15 @@ const onDownload = () => {
   state.detailList.videoUrl != "" ? haVideo() : "";
   state.detailList.imagesUrl.forEach((item, index) => {
     new Promise((role, rolt) => {
-      // const link = document.createElement("a");
-      // link.href = item;
-      // link.download = `image${index + 1}.jpg`; // 下载时的文件名
-      // link.style.display = "none";
-      // // 将链接添加到文档中并模拟点击
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
       setTimeout(() => {
         FileSaver.saveAs(item, `图片${index}.jpg`);
       }, 1000);
     });
   });
 };
-const getBase64Image = (img) => {
-  let canvas = document.createElement("canvas");
-  canvas.width = img.width;
-  canvas.height = img.height;
-  let ctx = canvas.getContext("2d");
-  ctx?.drawImage(img, 0, 0, img.width, img.height);
-  let dataURL = canvas.toDataURL("image/png");
-  return dataURL;
-};
 
 const haVideo = () => {
   const videoUrl = state.detailList.videoUrl;
-
   const xhr = new XMLHttpRequest();
   xhr.open("GET", videoUrl, true);
   xhr.responseType = "blob";
@@ -212,9 +191,6 @@ watch(
   },
   { immediate: true }
 );
-watch(detailList.imagesUrl, () => {
-  nextTick(() => {});
-});
 
 const handler = (event) => {
   let Amask = mask.value;
@@ -344,6 +320,7 @@ onMounted(() => {
         .title {
           font-size: 20px;
           color: #131313;
+          letter-spacing: 1px;
         }
         .btn {
           display: flex;
@@ -386,6 +363,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         padding: 10px;
+        height: 450px;
         overflow: hidden;
       }
     }

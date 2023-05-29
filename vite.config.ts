@@ -13,7 +13,7 @@ export default defineConfig({
     // 配置跨域处理
     proxy: {
       "/v1": {
-        target: "https://p.xcx100.info",
+        // target: "https://sshoes.co",
         changeOrigin: true,
       },
     },

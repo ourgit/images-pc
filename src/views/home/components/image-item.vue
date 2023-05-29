@@ -5,8 +5,8 @@
       <div class="btn">
         <div class="left">{{ item.imagesUrl.length }}</div>
         <div class="right">
-          <el-icon size="24"><Download /></el-icon>
-          <el-icon size="24"><Share /></el-icon>
+          <el-icon size="24" @click.stop="onDownload()"><Download /></el-icon>
+          <el-icon size="24" @click.stop="shareToFacebook()"><Share /></el-icon>
         </div>
       </div>
     </div>
@@ -15,9 +15,26 @@
 
 <script setup>
 import { useRouter } from "vue-router";
+import FileSaver from "file-saver";
 const props = defineProps({ item: { type: Object, default: {} } });
 let router = useRouter();
-
+//下载
+const onDownload = () => {
+  props.item.imagesUrl.forEach((item, index) => {
+    new Promise((role, rolt) => {
+      setTimeout(() => {
+        FileSaver.saveAs(item, `图片${index}.jpg`);
+      }, 1000);
+    });
+  });
+};
+//分享
+const shareToFacebook = () => {
+  const url =
+    "https://www.facebook.com/sharer/sharer.php?u=" +
+    encodeURIComponent(`https://sshoes.co/#/detail/${props.item.id}`);
+  window.open(url, "_blank");
+};
 const onDetails = () => {
   router.push(`/detail/${props.item.id}`);
 };
@@ -34,9 +51,13 @@ const onDetails = () => {
 
   .content {
     position: relative;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
     img {
       width: 200px;
-      height: 250px;
+      height: 200px;
     }
     .btn {
       position: absolute;

@@ -1,8 +1,10 @@
 <template>
-  <top></top>
+  <top @clickTabs="clickTabs"></top>
   <div class="share">
     <div class="btn">
-      <el-button @click="shareToFacebook()" type="warning">分享链接</el-button>
+      <el-button @click="shareToFacebook()" type="warning">{{
+        shareLink
+      }}</el-button>
     </div>
     <div class="box">
       <div class="item" v-for="(item, index) in imageList" :key="index">
@@ -20,8 +22,9 @@ import { useRoute } from "vue-router";
 let route = useRoute();
 const state = reactive({
   imageList: [],
+  shareLink: "分享链接",
 });
-const { imageList } = toRefs(state);
+const { imageList, shareLink } = toRefs(state);
 const getShare = () => {
   let list = route.query;
   getShareList(list).then((res) => {
@@ -34,6 +37,16 @@ const shareToFacebook = () => {
     "https://www.facebook.com/sharer/sharer.php?u=" +
     encodeURIComponent(window.location.href);
   window.open(url, "_blank");
+};
+const clickTabs = (shift) => {
+  switch (shift) {
+    case 0:
+      state.shareLink = "分享链接";
+      break;
+    case 1:
+      state.shareLink = "share link";
+      break;
+  }
 };
 onMounted(() => {
   getShare();

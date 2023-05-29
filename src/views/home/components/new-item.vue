@@ -38,7 +38,12 @@ const onDetails = () => {
     flex: 1;
     margin-top: 10px;
     .text {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
       font-size: 16px;
+      letter-spacing: 1px;
       line-height: 16px;
       color: #989898;
     }
