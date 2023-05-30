@@ -16,7 +16,13 @@
       </div>
     </div>
     <div class="contes">
-      <p class="text">{{ item.title }}</p>
+      <p class="text">
+        {{
+          ChineseAndEnglish == 0
+            ? item.title
+            : (ChineseAndEnglish = 1 ? item.englishTitle : item.vi)
+        }}
+      </p>
     </div>
   </div>
 </template>
@@ -28,6 +34,10 @@ const props = defineProps({
   item: {
     type: Object,
     default: {},
+  },
+  ChineseAndEnglish: {
+    type: Number,
+    default: 0,
   },
 });
 const myViodeo = ref();
@@ -46,7 +56,7 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 199px;
+  width: 201px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
@@ -59,7 +69,7 @@ const onDetails = () => {
   }
   .img {
     img {
-      width: 200px;
+      width: 201px;
       height: 200px;
     }
   }

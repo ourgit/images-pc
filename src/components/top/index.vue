@@ -2,7 +2,7 @@
   <div class="header">
     <div class="contes" @mouseenter="onMover()" @mouseleave="onMouse()">
       <div class="left" @click="onHome()">
-        <span>{{ contact.name }}</span>
+        <span>{{ reform.title }}</span>
       </div>
       <div class="right">
         <div class="batch" @click="onBatch()">{{ reform.batch }}</div>
@@ -30,11 +30,17 @@
         <div style="font-size: 18px" class="svg">
           <Search style="width: 18px; height: 32px; margin-right: 8px" />
         </div>
-        <span>{{ search }}</span>
+        <span>{{ reform.search }}</span>
       </div>
     </div>
     <div class="contact">
-      <img :src="contact.rqCode" alt="" />
+      <img
+        :src="item.rqCode"
+        alt=""
+        v-for="item in contactList"
+        :key="item.id"
+        @click="OnPath(item)"
+      />
     </div>
   </div>
   <el-dialog v-model="dialogVisible" :title="reform.batch" width="550px">
@@ -90,9 +96,11 @@
 <script setup>
 import { getProductList } from "@/api/product/index.ts";
 import { getContact } from "@/api/contact/index.ts";
+import { getTitle } from "@/api/title/index.ts";
 import { reactive, toRefs, onMounted, computed, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import FileSaver from "file-saver";
+
 import { ElMessage } from "element-plus";
 let router = useRouter();
 
@@ -107,6 +115,10 @@ const state = reactive({
       name: "English",
       shift: 1,
     },
+    {
+      name: "Vietnamese",
+      shift: 2,
+    },
   ],
   filter: "",
   dialogVisible: false,
@@ -114,14 +126,16 @@ const state = reactive({
   totalPage: 0,
   productList: [],
   newProductList: [],
-  contact: {},
+  contactList: [],
   show: false,
   reform: {
     search: "搜索",
     DownloadVideo: "下载",
     share: "分享",
     batch: "批量",
+    title: "精选潮牌",
   },
+  title: "",
 });
 
 const {
@@ -132,9 +146,14 @@ const {
   currentPage,
   totalPage,
   show,
-  contact,
+  contactList,
   reform,
 } = toRefs(state);
+//标题
+const getTitleOb = () => {
+  getTitle().then((res) => {});
+};
+
 //请求
 const ProductList = () => {
   getProductList({ page: state.currentPage, filter: state.filter }).then(
@@ -154,7 +173,7 @@ const ProductList = () => {
 //联系
 const getContactObject = () => {
   getContact().then((res) => {
-    state.contact = res.contact;
+    state.contactList = res.contactList;
   });
 };
 const searchProduct = (filter) => {
@@ -241,6 +260,7 @@ const onOut = (item) => {
         DownloadVideo: "下载",
         share: "分享",
         batch: "批量",
+        title: "精选潮牌",
       };
       break;
     case 1:
@@ -249,6 +269,16 @@ const onOut = (item) => {
         DownloadVideo: "Download",
         share: "share link",
         batch: "batch",
+        title: "A selection of trendy brands",
+      };
+      break;
+    case 2:
+      state.reform = {
+        search: "Tìm kiếm",
+        DownloadVideo: "Tải về",
+        share: "Chia sẻ liên kết",
+        batch: "Số lượng lớn",
+        title: "Lựa chọn các thương hiệu thời trang",
       };
       break;
   }
@@ -261,7 +291,9 @@ const onBatch = () => {
   ProductList();
   state.dialogVisible = true;
 };
-
+const OnPath = (item) => {
+  window.open(item.contactUrl);
+};
 const onMover = () => {
   var body = document.querySelector("body");
   body.style.cursor = "pointer";
@@ -291,17 +323,18 @@ onMounted(() => {});
     .left {
       span {
         padding: 10px;
+        color: #39ac73;
       }
     }
 
     .right {
       display: flex;
       .batch {
-        width: 100px;
         text-align: center;
         font-size: 18px;
         line-height: 50px;
-        color: #333333;
+        color: #888888;
+        margin-right: 10px;
       }
       .dropdown {
         /* 下拉按钮样式 */
@@ -352,7 +385,7 @@ onMounted(() => {});
   .search {
     height: 40px;
     margin-left: 100px;
-    border: 2px solid #ff3333;
+    border: 2px solid #8cd9b3;
     width: 700px;
     display: flex;
     input {
@@ -365,7 +398,7 @@ onMounted(() => {});
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #ff3333;
+      background-color: #8cd9b3;
       width: 120px;
       color: #fff;
       height: 40px;
@@ -378,8 +411,10 @@ onMounted(() => {});
     }
   }
   .contact {
-    margin-left: 150px;
+    margin-left: 100px;
+    display: flex;
     img {
+      margin-left: 20px;
       width: 100px;
       height: 100px;
     }

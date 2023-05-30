@@ -42,7 +42,7 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 199px;
+  width: 201px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
@@ -56,7 +56,7 @@ const onDetails = () => {
     flex-direction: column;
     align-items: center;
     img {
-      width: 200px;
+      width: 201px;
       height: 200px;
     }
     .btn {

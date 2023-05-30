@@ -46,6 +46,10 @@ const clickTabs = (shift) => {
     case 1:
       state.shareLink = "share link";
       break;
+
+    case 2:
+      state.shareLink = "Chia sẻ liên kết";
+      break;
   }
 };
 onMounted(() => {

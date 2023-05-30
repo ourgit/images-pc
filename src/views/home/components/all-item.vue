@@ -2,7 +2,13 @@
   <div class="item" @click="onDetails()">
     <img :src="item.coverImgUrl" alt="" />
     <div class="contes">
-      <p class="text">{{ item.title }}</p>
+      <p class="text">
+        {{
+          ChineseAndEnglish == 0
+            ? item.title
+            : (ChineseAndEnglish = 1 ? item.englishTitle : item.vi)
+        }}
+      </p>
     </div>
   </div>
 </template>
@@ -14,6 +20,10 @@ const props = defineProps({
     type: Object,
     default: {},
   },
+  ChineseAndEnglish: {
+    type: Number,
+    default: 0,
+  },
 });
 let router = useRouter();
 const onDetails = () => {
@@ -23,7 +33,7 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 199px;
+  width: 201px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;

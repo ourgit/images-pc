@@ -16,7 +16,9 @@
       </div>
     </div>
     <div class="contes">
-      <p class="text">{{ item.title }}</p>
+      <p class="text">
+        {{ ChineseAndEnglish == 0 ? item.title : item.englishTitle }}
+      </p>
     </div>
   </div>
 </template>
@@ -28,6 +30,10 @@ const props = defineProps({
   item: {
     type: Object,
     default: {},
+  },
+  ChineseAndEnglish: {
+    type: Number,
+    default: 0,
   },
 });
 const myViodeo = ref();

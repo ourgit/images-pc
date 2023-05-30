@@ -1,7 +1,7 @@
 <template>
   <div class="item" @click="onDetail(item)">
     <img :src="item.coverImgUrl" />
-    <span>{{ item.title }}</span>
+    <span> {{ ChineseAndEnglish == 0 ? item.title : item.englishTitle }}</span>
   </div>
 </template>
 
@@ -13,6 +13,10 @@ const props = defineProps({
     type: Object,
     default: {},
   },
+  ChineseAndEnglish: {
+    type: Number,
+    default: 0,
+  },
 });
 const onDetail = (item) => {
   router.push(`/detail/${item.id}`);
@@ -23,21 +27,19 @@ const onDetail = (item) => {
 .item {
   margin: 10px 0;
   display: flex;
-  height: 114.5px;
+  height: 60px;
   img {
     width: 60px;
     height: 60px;
   }
   span {
-    display: block;
     font-size: 16px;
-    height: 60px;
-
     letter-spacing: 1px;
     margin-left: 10px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    height: 32px;
     overflow: hidden;
   }
 }

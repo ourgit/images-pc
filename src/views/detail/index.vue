@@ -28,7 +28,11 @@
         </div>
         <div class="middle">
           <div class="title">
-            {{ detailList.title }}
+            {{
+              ChineseAndEnglish == 0
+                ? detailList.title
+                : detailList.englishTitle
+            }}
           </div>
           <div class="btn">
             <div class="download b" @click="onDownload()">
@@ -46,6 +50,7 @@
             v-for="(item, index) in RecommendList"
             :key="index"
             :item="item"
+            :ChineseAndEnglish="ChineseAndEnglish"
           ></in-item>
         </div>
       </div>
@@ -105,9 +110,17 @@ const state = reactive({
   },
   RecommendList: [],
   current: 0,
+  ChineseAndEnglish: 0,
 });
-const { detailList, image, show, reform, RecommendList, current } =
-  toRefs(state);
+const {
+  detailList,
+  image,
+  show,
+  reform,
+  RecommendList,
+  current,
+  ChineseAndEnglish,
+} = toRefs(state);
 //详情
 const getDetail = () => {
   let id = route.params.id;
@@ -138,12 +151,24 @@ const clickTabs = (shift) => {
     DownloadVideo: "Download",
     transmit: "share link",
   };
+  let ru3 = {
+    video: "video",
+    photo: "Album ảnh",
+    DownloadVideo: "Tải về",
+    transmit: "Chia sẻ liên kết",
+  };
   switch (shift) {
     case 0:
       state.reform = ru1;
+      state.ChineseAndEnglish = 0;
       break;
     case 1:
       state.reform = ru2;
+      state.ChineseAndEnglish = 1;
+      break;
+    case 2:
+      state.tabsList = tList3;
+      state.ChineseAndEnglish = 2;
       break;
   }
 };
@@ -336,20 +361,16 @@ onMounted(() => {
           .download {
             border-top-left-radius: 20px;
             border-bottom-left-radius: 20px;
-            background: linear-gradient(
-              90deg,
-              rgb(255, 119, 0),
-              rgb(255, 73, 0)
-            );
+            background: linear-gradient(90deg, rgb(0, 204, 0), rgb(1, 153, 51));
             box-shadow: rgba(255, 119, 0, 0.2) 0px 9px 13px 0px;
           }
           .copylink {
             border-top-right-radius: 20px;
             border-bottom-right-radius: 20px;
             background: linear-gradient(
-              90deg,
-              rgb(255, 203, 0),
-              rgb(255, 148, 2)
+              60deg,
+              rgb(136, 241, 31),
+              rgb(7, 240, 7)
             );
             box-shadow: rgba(255, 203, 0, 0.2) 0px 9px 13px 0px;
           }
@@ -363,7 +384,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         padding: 10px;
-        height: 450px;
+        height: 470px;
         overflow: hidden;
       }
     }
@@ -389,7 +410,7 @@ onMounted(() => {
           border: 1px solid #f6f6f6;
         }
         & > .active {
-          background-color: #ff3333;
+          background-color: #339966;
           color: #f6f6f6;
         }
       }

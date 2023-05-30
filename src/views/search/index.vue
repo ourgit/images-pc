@@ -18,6 +18,7 @@
           v-for="item in productList"
           :key="item.id"
           :item="item"
+          :ChineseAndEnglish="ChineseAndEnglish"
         ></all-item>
       </div>
       <div v-show="status == 1" class="arrange">
@@ -25,6 +26,7 @@
           v-for="item in newProductList"
           :key="item.id"
           :item="item"
+          :ChineseAndEnglish="ChineseAndEnglish"
         ></new-item>
         <div v-if="newProductList == 0" class="out">亲~~~今天暂无上新</div>
       </div>
@@ -33,6 +35,7 @@
           v-for="item in productList"
           :key="item.id"
           :item="item"
+          :ChineseAndEnglish="ChineseAndEnglish"
         ></video-item>
       </div>
       <div v-show="status == 3" class="arrange">
@@ -74,7 +77,7 @@ onBeforeRouteUpdate((to) => {
 const state = reactive({
   currentPage: 1,
   totalPage: 0,
-  filter: "",
+
   productList: [],
   newProductList: [],
   tabsList: [
@@ -131,27 +134,19 @@ const state = reactive({
       status: 3,
     },
   ],
-  options: [
-    {
-      name: "Chinese",
-      shift: 0,
-    },
-    {
-      name: "English",
-      shift: 1,
-    },
-  ],
+
   status: 0,
+  ChineseAndEnglish: 0,
 });
 const {
   currentPage,
   totalPage,
-  filter,
-  options,
+
   tabsList,
   status,
   newProductList,
   productList,
+  ChineseAndEnglish,
 } = toRefs(state);
 const getSearchList = () => {
   getProductList({ page: state.currentPage, filter: state.filter }).then(
@@ -180,9 +175,11 @@ const clickTabs = (shift) => {
   switch (shift) {
     case 0:
       state.tabsList = state.tList1;
+      state.ChineseAndEnglish = 0;
       break;
     case 1:
       state.tabsList = state.tList2;
+      state.ChineseAndEnglish = 1;
       break;
   }
 };
