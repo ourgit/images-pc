@@ -39,6 +39,7 @@
             :item="item"
             :ChineseAndEnglish="ChineseAndEnglish"
           ></all-item>
+          <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
         <div v-show="status == 1" class="arrange">
           <new-item
@@ -48,7 +49,6 @@
             :ChineseAndEnglish="ChineseAndEnglish"
           ></new-item>
           <div v-if="newProductList == 0" class="out">亲~~~今天暂无上新</div>
-          0
         </div>
         <div v-show="status == 2" class="arrange">
           <video-item
@@ -57,6 +57,7 @@
             :item="item"
             :ChineseAndEnglish="ChineseAndEnglish"
           ></video-item>
+          <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
         <div v-show="status == 3" class="arrange">
           <image-item
@@ -64,6 +65,7 @@
             :key="item.id"
             :item="item"
           ></image-item>
+          <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
       </div>
     </div>

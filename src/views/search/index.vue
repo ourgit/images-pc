@@ -209,10 +209,11 @@ onMounted(() => {
     .tabs-name {
       font-size: 16px;
       padding: 10px 20px;
+      color: #4b4b4b;
     }
     .active {
       color: #fff;
-      background-color: #ff3333;
+      background-color: #8cd9b3;
     }
   }
 
