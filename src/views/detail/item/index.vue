@@ -1,7 +1,15 @@
 <template>
   <div class="item" @click="onDetail(item)">
     <img :src="item.coverImgUrl" />
-    <span> {{ ChineseAndEnglish == 0 ? item.title : item.englishTitle }}</span>
+    <span>
+      {{
+        ChineseAndEnglish == 0
+          ? item.title
+          : ChineseAndEnglish == 1
+          ? item.englishTitle
+          : item.vietnameseTitle
+      }}</span
+    >
   </div>
 </template>
 

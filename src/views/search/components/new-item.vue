@@ -3,7 +3,13 @@
     <img :src="item.coverImgUrl" alt="" />
     <div class="contes">
       <p class="text">
-        {{ ChineseAndEnglish == 0 ? item.title : item.englishTitle }}
+        {{
+          ChineseAndEnglish == 0
+            ? item.title
+            : ChineseAndEnglish == 1
+            ? item.englishTitle
+            : item.vietnameseTitle
+        }}
       </p>
     </div>
   </div>

@@ -31,7 +31,9 @@
             {{
               ChineseAndEnglish == 0
                 ? detailList.title
-                : detailList.englishTitle
+                : ChineseAndEnglish == 1
+                ? detailList.englishTitle
+                : detailList.vietnameseTitle
             }}
           </div>
           <div class="btn">
@@ -167,7 +169,7 @@ const clickTabs = (shift) => {
       state.ChineseAndEnglish = 1;
       break;
     case 2:
-      state.tabsList = tList3;
+      state.reform = ru3;
       state.ChineseAndEnglish = 2;
       break;
   }
@@ -367,11 +369,7 @@ onMounted(() => {
           .copylink {
             border-top-right-radius: 20px;
             border-bottom-right-radius: 20px;
-            background: linear-gradient(
-              60deg,
-              rgb(136, 241, 31),
-              rgb(7, 240, 7)
-            );
+            background: linear-gradient(60deg, rgb(11, 255, 22), rgb(2, 73, 2));
             box-shadow: rgba(255, 203, 0, 0.2) 0px 9px 13px 0px;
           }
         }

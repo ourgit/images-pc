@@ -34,9 +34,13 @@ const onDetails = () => {
 
   .content {
     position: relative;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
     img {
       width: 100%;
-      height: 250px;
+      height: 200px;
     }
     .btn {
       position: absolute;

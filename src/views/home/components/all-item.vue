@@ -1,12 +1,15 @@
 <template>
   <div class="item" @click="onDetails()">
     <img :src="item.coverImgUrl" alt="" />
+
     <div class="contes">
       <p class="text">
         {{
           ChineseAndEnglish == 0
             ? item.title
-            : (ChineseAndEnglish = 1 ? item.englishTitle : item.vi)
+            : ChineseAndEnglish == 1
+            ? item.englishTitle
+            : item.vietnameseTitle
         }}
       </p>
     </div>

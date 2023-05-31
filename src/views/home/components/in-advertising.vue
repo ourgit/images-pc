@@ -1,6 +1,6 @@
 <template>
   <div class="advertising-item" @click="onPath()">
-    <img src="item" alt="" />
+    <img :src="item.imgUrl" alt="" />
   </div>
 </template>
 
@@ -12,7 +12,7 @@ const props = defineProps({
   },
 });
 const onPath = () => {
-  window.open(props.item);
+  window.open(props.item.linkUrl);
 };
 </script>
 
@@ -20,7 +20,7 @@ const onPath = () => {
 .advertising-item {
   width: 300px;
   height: 100px;
-  background-color: #00ff00;
+
   img {
     width: 100%;
     height: 100%;

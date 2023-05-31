@@ -6,6 +6,25 @@
       </div>
       <div class="right">
         <div class="batch" @click="onBatch()">{{ reform.batch }}</div>
+        <div class="r-dropdown">
+          <div class="r-dropbtn">
+            {{ reform.relation }}
+          </div>
+          <div class="r-dropdown-content">
+            <div class="r">
+              <div
+                v-for="(item, index) in contactList"
+                :key="index"
+                @click="onOrate(item)"
+                class="r-ration"
+              >
+                <div class="chang">{{ item.name }}</div>
+                <div class="url">{{ item.account }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="dropdown">
           <div class="dropbtn">
             <img src="@/assets/img/language.png" alt="" />
@@ -62,7 +81,15 @@
               <img :src="item.coverImgUrl" alt="" />
             </div>
             <div class="right" @click="onDetail(item)">
-              <span>{{ item.title }}</span>
+              <span>
+                {{
+                  ChineseAndEnglish == 0
+                    ? item.title
+                    : ChineseAndEnglish == 1
+                    ? item.englishTitle
+                    : item.vietnameseTitle
+                }}</span
+              >
             </div>
           </div>
         </div>
@@ -96,14 +123,21 @@
 <script setup>
 import { getProductList } from "@/api/product/index.ts";
 import { getContact } from "@/api/contact/index.ts";
-import { getTitle } from "@/api/title/index.ts";
-import { reactive, toRefs, onMounted, computed, onBeforeMount } from "vue";
-import { useRouter } from "vue-router";
+
+import {
+  reactive,
+  toRefs,
+  onMounted,
+  computed,
+  onBeforeMount,
+  watch,
+} from "vue";
+import { useRouter, useRoute } from "vue-router";
 import FileSaver from "file-saver";
 
 import { ElMessage } from "element-plus";
 let router = useRouter();
-
+let route = useRoute();
 const emit = defineEmits(["clickTabs"]);
 const state = reactive({
   options: [
@@ -127,6 +161,7 @@ const state = reactive({
   productList: [],
   newProductList: [],
   contactList: [],
+
   show: false,
   reform: {
     search: "搜索",
@@ -134,8 +169,9 @@ const state = reactive({
     share: "分享",
     batch: "批量",
     title: "精选潮牌",
+    relation: "联系",
   },
-  title: "",
+  ChineseAndEnglish: 0,
 });
 
 const {
@@ -148,10 +184,13 @@ const {
   show,
   contactList,
   reform,
+  ChineseAndEnglish,
 } = toRefs(state);
 //标题
 const getTitleOb = () => {
-  getTitle().then((res) => {});
+  getTitle().then((res) => {
+    state.relationList = res.list;
+  });
 };
 
 //请求
@@ -194,6 +233,9 @@ const onShow = () => {
   state.productList.forEach((item) => {
     item.selected = state.show;
   });
+};
+const onOrate = (item) => {
+  window.open(item.homePageUrl);
 };
 //分享
 const shareToFacebook = () => {
@@ -255,30 +297,36 @@ const onSearch = () => {
 const onOut = (item) => {
   switch (item.shift) {
     case 0:
+      state.ChineseAndEnglish = 0;
       state.reform = {
         search: "搜索",
         DownloadVideo: "下载",
         share: "分享",
         batch: "批量",
         title: "精选潮牌",
+        relation: "联系",
       };
       break;
     case 1:
+      state.ChineseAndEnglish = 1;
       state.reform = {
         search: "search",
         DownloadVideo: "Download",
         share: "share link",
         batch: "batch",
         title: "A selection of trendy brands",
+        relation: "relation",
       };
       break;
     case 2:
+      state.ChineseAndEnglish = 2;
       state.reform = {
         search: "Tìm kiếm",
         DownloadVideo: "Tải về",
         share: "Chia sẻ liên kết",
         batch: "Số lượng lớn",
         title: "Lựa chọn các thương hiệu thời trang",
+        relation: "Liên hệ",
       };
       break;
   }
@@ -305,7 +353,15 @@ const onMouse = () => {
 onBeforeMount(() => {
   getContactObject();
 });
-
+watch(
+  route,
+  (newValue, oldValue) => {
+    console.log(route);
+    state.filter = route.query.filter;
+    console.log(state.filter);
+  },
+  { immediate: true }
+);
 onMounted(() => {});
 </script>
 
@@ -329,8 +385,57 @@ onMounted(() => {});
 
     .right {
       display: flex;
+      align-items: center;
+      .r-dropdown {
+        /* 下拉按钮样式 */
+        height: 50px;
+        margin-right: 10px;
+        .r-dropbtn {
+          text-align: center;
+          line-height: 50px;
+          color: #888888;
+          font-size: 18px;
+          border: none;
+        }
+        /* 下拉内容（默认隐藏） */
+        .r-dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f9f9f9;
+          border-radius: 10px;
+          min-width: 160px;
+          overflow: hidden;
+          box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+          .r {
+            color: black;
+            text-decoration: none;
+            display: block;
+            .r-ration {
+              display: flex;
+              height: 35px;
+              align-items: center;
+
+              .chang {
+                min-width: 80px;
+                text-align: center;
+              }
+              .url {
+                min-width: 150px;
+              }
+            }
+            & > :hover {
+              color: #fff;
+              background-color: #8cd9b3;
+            }
+          }
+          z-index: 1;
+        }
+      }
+      & > :hover .r-dropdown-content {
+        display: block;
+      }
+
       .batch {
-        text-align: center;
         font-size: 18px;
         line-height: 50px;
         color: #888888;

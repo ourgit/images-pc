@@ -2,7 +2,7 @@ import request from "@/utils/request";
 //获取广告
 export function getAdvertising(data: any) {
   return request({
-    url: "/v1/p/noauth/contact/",
+    url: "/v1/p/noauth/AD/",
     method: "get",
     data,
   });

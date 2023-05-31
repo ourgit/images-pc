@@ -28,7 +28,13 @@
           :class="[item.id == categoryId ? 'active' : '']"
           @click="onCate(item)"
         >
-          {{ item.name }}
+          {{
+            ChineseAndEnglish == 0
+              ? item.name
+              : ChineseAndEnglish == 1
+              ? item.enName
+              : item.viName
+          }}
         </div>
       </div>
       <div class="right">
@@ -142,7 +148,7 @@ const onSize = () => {
 //广告
 const getAdvertisingList = () => {
   getAdvertising().then((res) => {
-    state.AdvertisingList = res;
+    state.AdvertisingList = res.list;
   });
 };
 //商品分类
@@ -255,6 +261,7 @@ const clickTabs = (shift) => {
 onMounted(() => {
   ProductList();
   getCategory();
+  getAdvertisingList();
 });
 </script>
 
@@ -283,6 +290,7 @@ onMounted(() => {
     width: 1200px;
     margin: 10px auto;
     height: 100px;
+    overflow: hidden;
     //#acc
     display: flex;
     justify-content: space-between;

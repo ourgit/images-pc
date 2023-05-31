@@ -65,7 +65,7 @@ import AllItem from "./components/all-item.vue";
 import NewItem from "./components/new-item.vue";
 import ImageItem from "./components/image-item.vue";
 import videoItem from "./components/video.item.vue";
-import { getProductList } from "@/api/product/index.ts";
+import { getSearch } from "@/api/search/index.ts";
 import { useRoute, useRouter } from "vue-router";
 let route = useRoute();
 let router = useRouter();
@@ -98,7 +98,42 @@ const state = reactive({
       status: 3,
     },
   ],
-  tList1: [
+  status: 0,
+  ChineseAndEnglish: 0,
+});
+const {
+  currentPage,
+  totalPage,
+
+  tabsList,
+  status,
+  newProductList,
+  productList,
+  ChineseAndEnglish,
+} = toRefs(state);
+const getSearchList = () => {
+  getSearch({ page: state.currentPage, filter: state.filter }).then((res) => {
+    res.newProductList.forEach((item) => {
+      item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
+    });
+    res.productList.forEach((item) => {
+      item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
+    });
+    state.newProductList = res.newProductList;
+    state.productList = res.productList;
+    state.totalPage = res.pages;
+  });
+};
+const onChange = () => {
+  getSearchList();
+};
+const onSize = () => {
+  getSearchList();
+};
+
+//切换语言
+const clickTabs = (shift) => {
+  const tList1 = [
     {
       name: "全部",
       status: 0,
@@ -115,8 +150,8 @@ const state = reactive({
       name: "图片",
       status: 3,
     },
-  ],
-  tList2: [
+  ];
+  const tList2 = [
     {
       name: "all",
       status: 0,
@@ -133,53 +168,37 @@ const state = reactive({
       name: "picture",
       status: 3,
     },
-  ],
-
-  status: 0,
-  ChineseAndEnglish: 0,
-});
-const {
-  currentPage,
-  totalPage,
-
-  tabsList,
-  status,
-  newProductList,
-  productList,
-  ChineseAndEnglish,
-} = toRefs(state);
-const getSearchList = () => {
-  getProductList({ page: state.currentPage, filter: state.filter }).then(
-    (res) => {
-      res.newProductList.forEach((item) => {
-        item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
-      });
-      res.productList.forEach((item) => {
-        item.imagesUrl = item.imagesUrl ? JSON.parse(item.imagesUrl) : [];
-      });
-      state.newProductList = res.newProductList;
-      state.productList = res.productList;
-      state.totalPage = res.pages;
-    }
-  );
-};
-const onChange = () => {
-  getSearchList();
-};
-const onSize = () => {
-  getSearchList();
-};
-
-//切换语言
-const clickTabs = (shift) => {
+  ];
+  const tList3 = [
+    {
+      name: "Tất cả",
+      status: 0,
+    },
+    {
+      name: "Lên mới",
+      status: 1,
+    },
+    {
+      name: "video",
+      status: 2,
+    },
+    {
+      name: "Hình ảnh",
+      status: 3,
+    },
+  ];
   switch (shift) {
     case 0:
-      state.tabsList = state.tList1;
+      state.tabsList = tList1;
       state.ChineseAndEnglish = 0;
       break;
     case 1:
-      state.tabsList = state.tList2;
+      state.tabsList = tList2;
       state.ChineseAndEnglish = 1;
+      break;
+    case 2:
+      state.tabsList = tList3;
+      state.ChineseAndEnglish = 2;
       break;
   }
 };
