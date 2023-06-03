@@ -261,12 +261,9 @@ onMounted(() => {
         .spec-preview {
           position: relative;
           width: 400px;
-          height: 390px;
-          border: 1px solid #ccc;
-
           img {
             width: 100%;
-            height: 100%;
+            height: auto;
           }
 
           .event {
@@ -303,7 +300,7 @@ onMounted(() => {
             img {
               width: 200%;
               max-width: 200%;
-              height: 200%;
+              height: auto;
               position: absolute;
               left: 0;
               top: 0;

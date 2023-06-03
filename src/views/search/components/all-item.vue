@@ -36,15 +36,13 @@ const onDetails = () => {
 <style scoped lang="scss">
 .item {
   width: 199px;
-  height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
-
   img {
     width: 200px;
-    height: 198px;
+    height: auto;
   }
   .contes {
     margin-top: 10px;

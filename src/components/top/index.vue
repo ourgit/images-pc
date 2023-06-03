@@ -518,10 +518,10 @@ onMounted(() => {});
   .contact {
     margin-left: 100px;
     display: flex;
+    align-items: center;
     img {
       margin-left: 20px;
       width: 100px;
-      height: 100px;
     }
   }
 }

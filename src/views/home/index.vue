@@ -2,36 +2,22 @@
   <div class="home">
     <top @clickTabs="clickTabs"></top>
     <div class="tabs">
-      <div
-        class="tabs-name"
-        :class="[status == item.status ? ' active' : '']"
-        v-for="(item, index) in tabsList"
-        :key="index"
-        @click="onTabs(item.status)"
-      >
+      <div class="tabs-name" :class="[status == item.status ? ' active' : '']" v-for="(item, index) in tabsList"
+        :key="index" @click="onTabs(item.status)">
         {{ item.name }}
       </div>
     </div>
     <div class="advertising">
-      <in-advertising
-        v-for="item in AdvertisingList"
-        :key="item.id"
-        :item="item"
-      ></in-advertising>
+      <in-advertising v-for="item in AdvertisingList" :key="item.id" :item="item"></in-advertising>
     </div>
     <div class="box">
       <div class="left">
-        <div
-          class="tabs-name"
-          v-for="(item, index) in categoryList"
-          :key="index"
-          :class="[item.id == categoryId ? 'active' : '']"
-          @click="onCate(item)"
-        >
+        <div class="tabs-name" v-for="(item, index) in categoryList" :key="index"
+          :class="[item.id == categoryId ? 'active' : '']" @click="onCate(item)">
           {{
             ChineseAndEnglish == 0
-              ? item.name
-              : ChineseAndEnglish == 1
+            ? item.name
+            : ChineseAndEnglish == 1
               ? item.enName
               : item.viName
           }}
@@ -39,50 +25,29 @@
       </div>
       <div class="right">
         <div v-show="status == 0" class="arrange">
-          <all-item
-            v-for="item in productList"
-            :key="item.id"
-            :item="item"
-            :ChineseAndEnglish="ChineseAndEnglish"
-          ></all-item>
+          <all-item v-for="item in productList" :key="item.id" :item="item"
+            :ChineseAndEnglish="ChineseAndEnglish"></all-item>
           <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
         <div v-show="status == 1" class="arrange">
-          <new-item
-            v-for="item in newProductList"
-            :key="item.id"
-            :item="item"
-            :ChineseAndEnglish="ChineseAndEnglish"
-          ></new-item>
+          <new-item v-for="item in newProductList" :key="item.id" :item="item"
+            :ChineseAndEnglish="ChineseAndEnglish"></new-item>
           <div v-if="newProductList == 0" class="out">亲~~~今天暂无上新</div>
         </div>
         <div v-show="status == 2" class="arrange">
-          <video-item
-            v-for="item in productList"
-            :key="item.id"
-            :item="item"
-            :ChineseAndEnglish="ChineseAndEnglish"
-          ></video-item>
+          <video-item v-for="item in productList" :key="item.id" :item="item"
+            :ChineseAndEnglish="ChineseAndEnglish"></video-item>
           <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
         <div v-show="status == 3" class="arrange">
-          <image-item
-            v-for="item in productList"
-            :key="item.id"
-            :item="item"
-          ></image-item>
+          <image-item v-for="item in productList" :key="item.id" :item="item"></image-item>
           <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
       </div>
     </div>
     <div class="btn">
-      <el-pagination
-        layout="prev, pager, next, jumper"
-        :page-count="totalPage"
-        v-model:currentPage="currentPage"
-        @current-change="onChange()"
-        @size-change="onSize()"
-      />
+      <el-pagination layout="prev, pager, next, jumper" :page-count="totalPage" v-model:currentPage="currentPage"
+        @current-change="onChange()" @size-change="onSize()" />
     </div>
   </div>
 </template>
@@ -275,11 +240,13 @@ onMounted(() => {
 
     display: flex;
     align-items: center;
+
     .tabs-name {
       font-size: 16px;
       padding: 10px 20px;
       color: #4b4b4b;
     }
+
     .active {
       color: #fff;
       background-color: #8cd9b3;
@@ -295,10 +262,12 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
   }
+
   .box {
     width: 1200px;
     margin: 0 auto;
     display: flex;
+
     .left {
       margin-top: -1px;
       margin-right: 10px;
@@ -313,6 +282,7 @@ onMounted(() => {
         height: 45px;
         color: #737373;
       }
+
       .active {
         background: #79d2a6;
         color: #fff;
@@ -323,6 +293,7 @@ onMounted(() => {
       .arrange {
         display: flex;
         flex-wrap: wrap;
+
         .out {
           width: 100%;
           height: 50px;
@@ -333,6 +304,7 @@ onMounted(() => {
     }
   }
 }
+
 .btn {
   margin-top: 100px;
   width: 1200px;

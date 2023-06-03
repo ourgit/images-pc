@@ -24,7 +24,7 @@ const props = defineProps({
   margin: 10px 0;
   img {
     width: 750px;
-    height: 500px;
+    height: auto;
   }
 }
 .not {

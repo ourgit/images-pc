@@ -38,7 +38,7 @@ const onDetail = (item) => {
   height: 60px;
   img {
     width: 60px;
-    height: 60px;
+    height: auto;
   }
   span {
     font-size: 16px;

@@ -35,15 +35,18 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 201px;
+  width: 280px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
-  border-collapse: collapse !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   img {
-    width: 201px;
+    width: auto;
     height: 198px;
   }
   .contes {

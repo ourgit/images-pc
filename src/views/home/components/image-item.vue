@@ -5,8 +5,12 @@
       <div class="btn">
         <div class="left">{{ item.imagesUrl.length }}</div>
         <div class="right">
-          <el-icon size="24" @click.stop="onDownload()"><Download /></el-icon>
-          <el-icon size="24" @click.stop="shareToFacebook()"><Share /></el-icon>
+          <el-icon size="24" @click.stop="onDownload()">
+            <Download />
+          </el-icon>
+          <el-icon size="24" @click.stop="shareToFacebook()">
+            <Share />
+          </el-icon>
         </div>
       </div>
     </div>
@@ -42,12 +46,16 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 201px;
-  height: 250px;
+  width: 280px;
+  height: 200px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .content {
     position: relative;
@@ -55,10 +63,12 @@ const onDetails = () => {
 
     flex-direction: column;
     align-items: center;
+
     img {
-      width: 201px;
+      width: auto;
       height: 200px;
     }
+
     .btn {
       position: absolute;
       left: 0;
@@ -72,5 +82,4 @@ const onDetails = () => {
       justify-content: space-between;
     }
   }
-}
-</style>
+}</style>

@@ -1,16 +1,9 @@
 <template>
   <div class="item" @click="onDetails()">
     <div class="content">
-      <video
-        v-if="item.videoUrl"
-        ref="myViodeo"
-        :src="item.videoUrl"
-        class="myViodeo"
-        :controls="show"
-        @mouseenter="onShow('true')"
-        @mouseleave="onShow('false')"
-        :style="{ height: 180 + 'px', width: show ? 100 + '%' : 180 + 'px' }"
-      ></video>
+      <video v-if="item.videoUrl" ref="myViodeo" :src="item.videoUrl" class="myViodeo" :controls="show"
+        @mouseenter="onShow('true')" @mouseleave="onShow('false')"
+        :style="{ height: 180 + 'px', width: show ? 100 + '%' : 180 + 'px' }"></video>
       <div class="img" v-else>
         <img :src="item.coverImgUrl" alt="" />
       </div>
@@ -19,8 +12,8 @@
       <p class="text">
         {{
           ChineseAndEnglish == 0
-            ? item.title
-            : ChineseAndEnglish == 1
+          ? item.title
+          : ChineseAndEnglish == 1
             ? item.englishTitle
             : item.vietnameseTitle
         }}
@@ -58,25 +51,32 @@ const onDetails = () => {
 
 <style scoped lang="scss">
 .item {
-  width: 201px;
+  width: 280px;
   height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
   margin-top: -1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   .content {
     display: flex;
     justify-content: center;
   }
+
   .img {
     img {
-      width: 201px;
-      height: 200px;
+      width: auto;
+      height: 198px;
     }
   }
+
   .contes {
     padding: 10px;
+
     .text {
       display: -webkit-box;
       -webkit-box-orient: vertical;

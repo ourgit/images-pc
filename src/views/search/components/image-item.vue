@@ -26,7 +26,6 @@ const onDetails = () => {
 <style scoped lang="scss">
 .item {
   width: 199px;
-  height: 250px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
@@ -40,7 +39,7 @@ const onDetails = () => {
     align-items: center;
     img {
       width: 100%;
-      height: 200px;
+      height: auto;
     }
     .btn {
       position: absolute;
