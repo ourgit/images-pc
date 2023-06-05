@@ -40,7 +40,8 @@
           <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
         <div v-show="status == 3" class="arrange">
-          <image-item v-for="item in productList" :key="item.id" :item="item"></image-item>
+          <image-item v-for="item in productList" :key="item.id" :item="item"
+            :ChineseAndEnglish="ChineseAndEnglish"></image-item>
           <div v-if="productList == 0" class="out">亲~~~暂无商品</div>
         </div>
       </div>

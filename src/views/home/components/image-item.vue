@@ -14,13 +14,23 @@
         </div>
       </div>
     </div>
+    <div class="pv-num">
+      {{ views }} {{ item.pv }}
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
 import FileSaver from "file-saver";
-const props = defineProps({ item: { type: Object, default: {} } });
+import { computed } from "vue"
+const props = defineProps({
+  item: { type: Object, default: {} },
+  ChineseAndEnglish: {
+    type: Number,
+    default: 0,
+  },
+});
 let router = useRouter();
 //下载
 const onDownload = () => {
@@ -42,12 +52,32 @@ const shareToFacebook = () => {
 const onDetails = () => {
   router.push(`/detail/${props.item.id}`);
 };
+const views = computed(() => {
+  const pvLanguage = [
+    {
+      name: "浏览量",
+    },
+    {
+      name: "views",
+    },
+    {
+      name: "Số lượt xem",
+    },
+  ];
+  switch (props.ChineseAndEnglish) {
+    case 0:
+      return pvLanguage[0].name
+    case 1:
+      return pvLanguage[1].name
+    case 2:
+      return pvLanguage[2].name
+  }
+});
 </script>
 
 <style scoped lang="scss">
 .item {
   width: 280px;
-  height: 200px;
   padding: 20px;
   border: 1px solid #d9d9d9;
   margin-right: -1px;
@@ -56,6 +86,12 @@ const onDetails = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  .pv-num {
+    align-self: flex-end;
+    color: #d9d9d9;
+    margin-top: 10px;
+  }
 
   .content {
     position: relative;

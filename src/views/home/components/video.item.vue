@@ -19,12 +19,15 @@
         }}
       </p>
     </div>
+    <div class="pv-num">
+     {{ views }} {{ item.pv }}
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { reactive, ref, toRefs } from "vue";
+import { reactive, ref, toRefs ,computed} from "vue";
 const props = defineProps({
   item: {
     type: Object,
@@ -47,6 +50,27 @@ const onShow = (type) => {
 const onDetails = () => {
   router.push(`/detail/${props.item.id}`);
 };
+const views = computed(() => {
+  const pvLanguage = [
+    {
+      name: "浏览量",
+    },
+    {
+      name: "views",
+    },
+    {
+      name: "Số lượt xem",
+    },
+  ];
+  switch (props.ChineseAndEnglish) {
+    case 0:
+      return pvLanguage[0].name
+    case 1:
+      return pvLanguage[1].name
+    case 2:
+      return pvLanguage[2].name
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -61,6 +85,11 @@ const onDetails = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  .pv-num {
+    align-self: flex-end;
+    color: #989898;
+  }
 
   .content {
     display: flex;

@@ -12,11 +12,15 @@
         }}
       </p>
     </div>
+    <div class="pv-num">
+      {{ views }}{{ item.pv }}
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
+import { computed } from "vue"
 const props = defineProps({
   item: {
     type: Object,
@@ -31,6 +35,27 @@ let router = useRouter();
 const onDetails = () => {
   router.push("/detail");
 };
+const views = computed(() => {
+  const pvLanguage = [
+    {
+      name: "浏览量",
+    },
+    {
+      name: "views",
+    },
+    {
+      name: "Số lượt xem",
+    },
+  ];
+  switch (props.ChineseAndEnglish) {
+    case 0:
+      return pvLanguage[0].name
+    case 1:
+      return pvLanguage[1].name
+    case 2:
+      return pvLanguage[2].name
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -48,6 +73,10 @@ const onDetails = () => {
   img {
     width: auto;
     height: 198px;
+  }
+  .pv-num{
+    align-self: flex-end;
+    color: #989898;
   }
   .contes {
     flex: 1;
